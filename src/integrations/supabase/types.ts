@@ -630,6 +630,63 @@ export type Database = {
           },
         ]
       }
+      extra_info: {
+        Row: {
+          address: string | null
+          allergies: string | null
+          blood_group: string | null
+          created_at: string | null
+          email: string | null
+          emergency_contact: string | null
+          id: string
+          notes: string | null
+          patient_id: string | null
+          phone: string | null
+          report_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          allergies?: string | null
+          blood_group?: string | null
+          created_at?: string | null
+          email?: string | null
+          emergency_contact?: string | null
+          id?: string
+          notes?: string | null
+          patient_id?: string | null
+          phone?: string | null
+          report_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          allergies?: string | null
+          blood_group?: string | null
+          created_at?: string | null
+          email?: string | null
+          emergency_contact?: string | null
+          id?: string
+          notes?: string | null
+          patient_id?: string | null
+          phone?: string | null
+          report_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "extra_info_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "extra_info_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       folder: {
         Row: {
           createdAt: string
