@@ -171,7 +171,7 @@ const Index = () => {
     // Fire the webhook in background: update sessionStorage when it completes
     (async () => {
       try {
-        const response = await fetch("https://n8n.codebyte.solutions/webhook/report", {
+        const response = await fetch(import.meta.env.VITE_WEBHOOK_URL, {
           method: "POST",
           body: formData,
         });
@@ -265,13 +265,12 @@ const Index = () => {
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
-                  className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-                    isDragging
+                  className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${isDragging
                       ? "border-primary bg-primary/5"
                       : file
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:border-primary/50"
-                  }`}
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
                 >
                   <input
                     ref={fileInputRef}
