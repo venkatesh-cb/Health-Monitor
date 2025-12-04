@@ -1,73 +1,203 @@
-# Welcome to your Lovable project
+🧪 Health Report Monitor
+========================
 
-## Project info
+A complete end-to-end system for **medical report upload, processing, extraction, standardization, and visualization**.The project combines a **React (Vite)** based UI with a **Supabase** backend and a powerful **n8n workflow engine** for automated PDF/image extraction, LOINC mapping, and database insertion.
 
-**URL**: https://lovable.dev/projects/417dcdeb-5ea8-46dc-90f2-67404f2e3b7e
+🚀 **Overview**
+---------------
 
-## How can I edit this code?
+Health Report Monitor allows users to upload lab reports (PDF, JPEG, PNG), which are then processed through an automated n8n workflow to extract structured medical data such as:
 
-There are several ways of editing your application.
+*   Patient details
+    
+*   Lab metadata
+    
+*   Test results (numeric & qualitative)
+    
+*   Reference ranges
+    
+*   LOINC standardized mappings
+    
 
-**Use Lovable**
+The frontend instantly navigates users to a **Processing Page**, while the backend workflow runs asynchronously. After extraction, users can view report details and fill optional additional information.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/417dcdeb-5ea8-46dc-90f2-67404f2e3b7e) and start prompting.
+🌟 **Key Features**
+-------------------
 
-Changes made via Lovable will be committed automatically to this repo.
+### **Frontend**
 
-**Use your preferred IDE**
+*   Clean, responsive UI built using **React + Vite + TypeScript**
+    
+*   Report upload with instant navigation to “Processing”
+    
+*   Real-time progress steps (Validation → OCR → Extraction → Mapping → Writing)
+    
+*   Additional info form with validation (phone, email, emergency contact, etc.)
+    
+*   60-second controlled processing timer (even if backend finishes early)
+    
+*   Display of saved additional info in the Report Details page
+    
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### **Backend (n8n Workflows)**
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+*   PDF & image extraction using **Gemini 2.5 Pro / Flash**
+    
+*   Text length heuristic for digital vs scanned reports
+    
+*   Structured information extraction using JSON schema
+    
+*   LOINC lookup, similarity scoring, caching & standardized test naming
+    
+*   Automatic insertion of:
+    
+    *   Patients
+        
+    *   Reports
+        
+    *   Test Results
+        
+*   Intelligent test categorization (CBC, LFT, Lipid Profile, etc.)
+    
+*   Full retry logic & error handling
+    
 
-Follow these steps:
+### **Database (Supabase / PostgreSQL)**
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+*   Three core tables:
+    
+    *   patients
+        
+    *   reports
+        
+    *   test\_results
+        
+*   Proper FK relations with ON DELETE CASCADE
+    
+*   Indexes for fast search (LOINC, flags, patient+test lookup)
+    
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+🛠 **Tech Stack**
+-----------------
 
-# Step 3: Install the necessary dependencies.
-npm i
+### **Frontend**
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+*   React 18
+    
+*   TypeScript
+    
+*   Vite
+    
+*   Tailwind / ShadCN UI
+    
+*   React Router
+    
+*   State utilities + custom hooks
+    
+*   Supabase JS Client
+    
+*   Icons: Lucide
+    
 
-**Edit a file directly in GitHub**
+### **Backend**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+*   **n8n Automation Workflows**
+    
+*   Google Gemini (PaLM API)
+    
+*   PostgreSQL (Supabase-managed)
+    
 
-**Use GitHub Codespaces**
+### **Languages Used**
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+*   **TypeScript** (Frontend)
+    
+*   **SQL** (Supabase tables & queries)
+    
+*   **JavaScript** (n8n Code Nodes)
+    
+*   **JSON Schema** (Information Extractor)
+    
 
-## What technologies are used for this project?
+📁 **Project Structure**
+------------------------
 
-This project is built with:
+### 📦 **Frontend Folder Structure**
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   src/  │  ├── App.tsx  ├── main.tsx  │  ├── pages/  │   ├── Home.tsx  │   ├── Index.tsx  │   ├── Processing.tsx  │   ├── ReportDetails.tsx  │  ├── components/  │   ├── NavLink.tsx  │   ├── ui/ (shadcn ui components)  │  ├── lib/  │   ├── client.ts        # Supabase client  │   ├── types.ts         # Shared type definitions  │  └── assets/   `
 
-## How can I deploy this project?
+### 🔧 **n8n Workflow Structure**
 
-Simply open [Lovable](https://lovable.dev/projects/417dcdeb-5ea8-46dc-90f2-67404f2e3b7e) and click on Share -> Publish.
+#### **Frontend Workflow (Report Submission)**
 
-## Can I connect a custom domain to my Lovable project?
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   Webhook → Switch (file type) →       ExtractFromFile → FindPDFLength → IsDigital?          → Analyze Document (PDF)          → Analyze Image (IMG)  → Information Extractor  → Set Data Structure  → Send To Backend Webhook   `
 
-Yes, you can!
+#### **Backend Workflow (DB Write Pipeline)**
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   Webhook → Insert Patient → Insert Report  → Split Tests → Loop Over Tests  → Check LOINC Cache → If Cached?       → Lookup LOINC  → Build SQL Params  → Insert Mapping Cache  → Attach LOINC to Test  → Prepare Test Data  → Insert Test Results   `
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+⚙️ **Setup & Installation**
+---------------------------
+
+### 1\. Clone Repository
+
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   git clone https://github.com//.git  cd health-report-monitor   `
+
+### 2\. Install Dependencies
+
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   npm install   `
+
+### 3\. Configure Supabase
+
+Create .env:
+
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   VITE_SUPABASE_URL="your-url"  VITE_SUPABASE_ANON_KEY="your-key"   `
+
+### 4\. Run the Dev Server
+
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   npm run dev   `
+
+### 5\. Configure n8n Workflows
+
+Import both:
+
+*   frontend-workflow.json
+    
+*   backend-db-write.json
+    
+
+Update:
+
+*   Webhook URLs
+    
+*   Supabase credentials
+    
+*   Gemini API key
+    
+
+🧪 **How the Flow Works**
+-------------------------
+
+1.  User uploads a PDF/image
+    
+2.  App **immediately routes** to /processing and shows progress steps
+    
+3.  n8n workflow processes document in background
+    
+4.  Extracted structured JSON is written to:
+    
+    *   patients
+        
+    *   reports
+        
+    *   test\_results
+        
+5.  After 1 minute, user can continue to the Dashboard
+    
+6.  Additional info (phone, email, etc.) is optional but validated
+    
+
+📄 License
+----------
+
+This project is proprietary and private unless you choose a license.(You can add MIT / Apache / GPL based on your preference.)

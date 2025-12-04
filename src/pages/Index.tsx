@@ -74,6 +74,59 @@ const Index = () => {
     }
   };
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   if (!name.trim()) {
+  //     toast.error("Please enter your name");
+  //     return;
+  //   }
+  //   if (!relation) {
+  //     toast.error("Please select a relation");
+  //     return;
+  //   }
+  //   if (!file) {
+  //     toast.error("Please upload a report file");
+  //     return;
+  //   }
+
+  //   setIsUploading(true);
+
+  //   const formData = new FormData();
+  //   formData.append("Name", name.trim());
+  //   formData.append("Relation", relation);
+  //   formData.append("Enter report", file);
+
+  //   sessionStorage.setItem(
+  //     "uploadData",
+  //     JSON.stringify({
+  //       name: name.trim(),
+  //       relation,
+  //       fileName: file.name,
+  //       uploadTime: new Date().toISOString(),
+  //     })
+  //   );
+
+  //   try {
+  //     const response = await fetch("https://n8n.codebyte.solutions/webhook/report", {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+
+  //     const data = await response.json();
+  //     sessionStorage.setItem("backendResponse", JSON.stringify(data));
+  //     navigate("/processing");
+  //   } catch (error) {
+  //     console.error("Upload error:", error);
+  //     sessionStorage.setItem("backendResponse", JSON.stringify({ message: "Error in workflow" }));
+  //     navigate("/processing");
+  //   } finally {
+  //     setIsUploading(false);
+  //   }
+  // };
+
+
+  // Replace the existing handleSubmit with this
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -95,8 +148,10 @@ const Index = () => {
     const formData = new FormData();
     formData.append("Name", name.trim());
     formData.append("Relation", relation);
-    formData.append("Enter report", file);
+    // IMPORTANT: use the underscore name that matches your webhook binaryPropertyName
+    formData.append("Enter_report", file); // <<-- changed from "Enter report"
 
+    // Save upload metadata so Processing page can show it immediately
     sessionStorage.setItem(
       "uploadData",
       JSON.stringify({
@@ -107,23 +162,45 @@ const Index = () => {
       })
     );
 
-    try {
-      const response = await fetch("https://n8n.codebyte.solutions/webhook/report", {
-        method: "POST",
-        body: formData,
-      });
+    // Mark backend as pending so Processing shows "in progress"
+    sessionStorage.setItem("backendResponse", JSON.stringify({ backend_status: "pending" }));
 
-      const data = await response.json();
-      sessionStorage.setItem("backendResponse", JSON.stringify(data));
-      navigate("/processing");
-    } catch (error) {
-      console.error("Upload error:", error);
-      sessionStorage.setItem("backendResponse", JSON.stringify({ message: "Error in workflow" }));
-      navigate("/processing");
-    } finally {
-      setIsUploading(false);
-    }
+    // Navigate immediately to processing page (do not wait for the webhook)
+    navigate("/processing");
+
+    // Fire the webhook in background: update sessionStorage when it completes
+    (async () => {
+      try {
+        const response = await fetch("https://n8n.codebyte.solutions/webhook/report", {
+          method: "POST",
+          body: formData,
+        });
+
+        // Try to parse JSON (if backend returns JSON)
+        let data;
+        try {
+          data = await response.json();
+        } catch (err) {
+          // backend didn't return JSON — store status text
+          data = { backend_status: response.ok ? "received" : "error", statusText: response.statusText };
+        }
+
+        // Save actual backend response — Processing polls sessionStorage and will pick this up
+        sessionStorage.setItem("backendResponse", JSON.stringify(data));
+      } catch (error) {
+        console.error("Upload error:", error);
+        sessionStorage.setItem("backendResponse", JSON.stringify({ message: "Error in workflow" }));
+      } finally {
+        // optional: if Index still mounted, reset uploading UI
+        try {
+          setIsUploading(false);
+        } catch (e) {
+          // component may be unmounted after navigate; ignore
+        }
+      }
+    })();
   };
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -142,7 +219,7 @@ const Index = () => {
       <main className="container py-12">
         <div className="max-w-2xl mx-auto">
           <div className="bg-card rounded-lg shadow-sm border border-border p-8">
-            <h1 className="text-2xl font-bold text-center text-foreground mb-8">
+            <h1 className="text-2xl font-bold text-center text-foreground mb-7">
               Upload Health Report
             </h1>
 
